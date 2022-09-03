@@ -1,0 +1,4 @@
+Install Laravel -OK
+Install admin LTE OK
+Install Auth OK
+Install Database OK

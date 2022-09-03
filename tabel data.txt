@@ -1,0 +1,11 @@
+User
+1.ID
+2.NIP
+3.Nama
+4.Jenis Kelamin
+5.Tempat Tanggal Lahir
+6.Alamat
+7.Email
+8.Password
+9.No. Telepon
+10.Kontak Darurat.
