@@ -3,6 +3,12 @@
 </div>
 @push('js')
 	<script>
+        function selectize()
+        {
+            $('select').selectize({
+            sortField: 'text'
+        });
+        }
 		var Toast = Swal.mixin({
 			toast: true,
 			position: 'top-end',

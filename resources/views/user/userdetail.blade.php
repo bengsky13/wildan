@@ -77,21 +77,28 @@
                         </select>
                         @error('Hak Akses') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
+                    <form action="/changepass" method="post">
+                        @csrf
                     <div class="form-group">
-                        <label for="exampleInputPassword">Password</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="exampleInputPassword" placeholder="Password" name="password">
+                        <label for="exampleInputPassword">Password Lama</label>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="exampleInputPassword" placeholder="Password" name="password" required>
                         @error('password') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword">Konfirmasi Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword" placeholder="Konfirmasi Password" name="password_confirmation">
-                </div>
+                        <label for="exampleInputPassword">Password Baru</label>
+                        <input type="password" class="form-control" id="exampleInputPassword" placeholder="Konfirmasi Password" name="newPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword">Konfirmasi Password Baru</label>
+                        <input type="password" class="form-control" id="exampleInputPassword" placeholder="Konfirmasi Password" name="newPasswordConfirm" required>
+                    </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Simpan</button>
                     <a href="{{route('dashboard')}}" class="btn btn-default">
                         Kembali
                     </a>
                 </div>
+                </form>
             </div>
         </div>
     </div>

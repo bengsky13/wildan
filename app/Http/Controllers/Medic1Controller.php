@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Alert;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Validation\Rule;
 class Medic1Controller extends Controller
 {
     /**
@@ -55,7 +55,7 @@ class Medic1Controller extends Controller
             'asur'=>'required',
             'glukos'=>'required',
             'hemog'=>'required',
-            'keluhan'=>'required'
+            'keluhanManual'=>Rule::requiredIf(!$request->keluhan)
         ]);
 
         $array = $request->only([
@@ -74,9 +74,23 @@ class Medic1Controller extends Controller
             'asur',
             'glukos',
             'hemog',
-            'keluhan'
+            'keluhan',
         ]);
-
+        
+        if(isset($array['keluhan']))
+        {
+            $manual = "";
+            if(strlen($request->keluhanManual) !== 0)
+            {
+                $manual .= ",".urlencode($request->keluhanManual);
+            }
+            $array['keluhan'] = implode(",", $array['keluhan']).$manual;
+        }
+        else
+        {
+            $array['keluhan'] = urlencode($request->keluhanManual);
+        }
+        
         $medic1 = Medic1::create($array);
         return redirect()->route('medic1s.show',[
             'medic1'=>$medic1]);

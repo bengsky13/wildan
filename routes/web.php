@@ -75,6 +75,9 @@ Route::get('/detail.user', function(){
 	return view('user/userdetail');
  })->name('detail.user')->middleware('auth');
 
+Route::post('/changepass', [App\Http\Controllers\UserController::class,'changepass'])->middleware('auth');
+
+ 
 Route::get('/detail.admin', function(){
 	return view('pasien/useradmin');
  })->name('detail.admin')->middleware('auth');

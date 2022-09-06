@@ -13,7 +13,14 @@
                 <div class="card-body">
                      <div class="form-group">
                         <div class="row clearfix">
-                            <div class="col-sm-2">
+                            <div class="col-xs py-4">
+                                <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">
+                        History
+                        </button>
+                        </div>
+                        <div class="col-sm-2">
+
                         <label for="exampleInputNoremed">Nomor Rekam Medis</label>
                         <input type="text" class="form-control @error('noremed') is-invalid @enderror" id="exampleInputNoremed" placeholder="{{old('noremed')}}" name="noremed" value="RM.{{$antrian2s->kopasant??old('noremed')}}"
                         readonly >
@@ -96,7 +103,42 @@
                     </table>
                     <div class="form-group">
                         <label for="exampleInputKeluhan">Keluhan</label>
-                        <textarea type="text" class="form-control @error('keluhan') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhan" value="{{$data->keluhan}}" readonly > {{$data->keluhan}}</textarea>
+                        <div class="demo-checkbox">
+
+                        <input type="checkbox" id="batuk" name="keluhan[]" value="Batuk" class="chk-col-red" />
+                        <label for="batuk">BATUK &emsp;</label>
+
+                        <input type="checkbox" id="flu" name="keluhan[]" value="Flu" class="chk-col-red" />
+                        <label for="flu">FLU &emsp;</label>
+
+                        <input type="checkbox" id="demam" name="keluhan[]" value="Demam" class="chk-col-red" />
+                        <label for="demam">DEMAM &emsp;</label>
+
+                        <input type="checkbox" id="pusing" name="keluhan[]" value="Pusing" class="chk-col-red" />
+                        <label for="pusing">PUSING &emsp;</label>
+
+                        <input type="checkbox" id="mual" name="keluhan[]" value="Mual" class="chk-col-red" />
+                        <label for="mual">MUAL &emsp;</label>
+
+                        <input type="checkbox" id="muntah" name="keluhan[]" value="Muntah" class="chk-col-red" />
+                        <label for="muntah">MUNTAH &emsp;</label>
+                        @php
+                        $keluhan = "";
+                        $checkBox = array();
+                        $listBox = array("Batuk", "Flu", "Demam", "Pusing", "Mual", "Muntah");
+                        foreach(explode(",", $data->keluhan) as $checkList)
+                        {
+                            if(!in_array($checkList, $listBox))
+                            {
+                                $keluhan .= urldecode($checkList);
+                            }
+                            else
+                            {
+                                $checkBox[] = strtolower($checkList);
+                            }
+                        }
+                        @endphp
+                        <textarea type="text" class="form-control @error('keluhan') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhan" value="{{$keluhan}}" readonly > {{$keluhan}}</textarea>
                         @error('keluhan') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                     <label>2. Pemeriksaan Lanjut dan Diagnosa</label>
@@ -134,10 +176,35 @@
                          ?>" readonly>
                         @error('noresep') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">
                         <label for="exampleInputObat">Obat dan Dosis</label>
-                        <textarea type="text" class="form-control @error('obat') is-invalid @enderror" id="exampleInputObat" placeholder="Obat dan Dosis" name="obat" value="" ></textarea>
                         @error('obat') <span class="text-danger">{{$message}}</span> @enderror
+                        <div class="row" id="resepDosis">
+                            <div class="col-md-5" id="selectionObat">
+                            <select class="form-control" onChange="dosisCheck()" id="dosisName" name="dosis[0][nama_obat]">
+                                <option value="">Daftar Obat</option>
+                                @foreach($obat as $listObat)
+                                <option value="{{$listObat->id}}">{{$listObat->namobat}}</option>
+                                @endforeach
+                            </select>
+                            </div>
+                            <div class="col-xs-1">
+                            <input type="number" onChange="dosisCheck()" id="dosis1" name="dosis[0][dosis1]" class="form-control input-number" min="0">
+                            </div>
+                            <div class="col-xs-1 py-2">
+                                    X
+                            </div>
+                            <div class="col-xs-1">
+                            <input type="number" onChange="dosisCheck()" id="dosis2" name="dosis[0][dosis2]" class="form-control input-number" min="0">
+                            </div>
+                            <div class="col-xs-1">
+                                    &nbsp;
+                            </div>
+                            <div class="col-xs-1">
+                            <input type="number" onChange="dosisCheck()" id="dosis2" name="dosis[0][jumlah_obat]" class="form-control input-number" min="0" placeholder="Jumlah">
+                            </div>
+                    </div>
+                    </div>
                     </div>
             </div>
                     <div class="card-footer">
@@ -149,4 +216,97 @@
             </div>
         </div>
     </div>
+
+    
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Riwayat</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="container">
+            <div class="col">
+                <label for="exampleInputNoremed">Tanggal Rekam</label>
+                <input class="form-control" value="{{date("d/m/Y", strtotime($history->created_at))}}" disabled/>
+            </div>
+            <div class="col">
+                <label for="exampleInputNoremed">Keluhan</label>
+                <input class="form-control" value="{{$history->keluhan}}" disabled/>
+            </div>
+            <div class="col">
+                <label for="exampleInputNoremed">Diagnosa</label>
+                <input class="form-control" value="{{$history->diagnosa}}" disabled/>
+            </div>
+            <div class="col">
+                <label for="exampleInputNoremed">Resep Obat</label>
+                <textarea class="form-control" disabled>{{$history->obat}}</textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+  </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(event) 
+        {
+            document.getElementsByName("keluhan[]").forEach(i =>
+            {
+                @if(count($checkBox) !== 0)
+                @foreach($checkBox as $listChecked)
+                document.getElementById("{{$listChecked}}").checked = true;
+                @endforeach
+                @endif
+                i.disabled = true;
+            })
+            selectize();
+
+        });
+        function dosisCheck()
+            {
+                var empty = 0;
+                var dosisList = document.getElementById("resepDosis");
+                var x = dosisList.querySelectorAll("#selectionObat").length;
+                var y = dosisList.querySelectorAll("[name^=dosis]").forEach(element => {
+                    if(element.value.length == 0)
+                    {
+                        empty = 1;
+                    }
+                });
+                if(empty == 0)
+                    {
+            var selectbox = `<div class="col-md-5" id="selectionObat">
+            <select class="form-control" id="exampleInputPosition" name="dosis[${x}][nama_obat]">
+                <option value="">Daftar Obat</option>
+                @foreach($obat as $listObat)
+                <option value="{{$listObat->id}}">{{$listObat->namobat}}</option>
+                @endforeach
+            </select>
+            </div>
+            <div class="col-xs-1">
+            <input type="number" onChange="dosisCheck()" id="dosis1" name="dosis[${x}][dosis1]" class="form-control input-number" min="0">
+            </div>
+            <div class="col-xs-1 py-2">
+                    X
+            </div>
+            <div class="col-xs-1">
+            <input type="number" onChange="dosisCheck()" id="dosis2" name="dosis[${x}][dosis2]" class="form-control input-number" min="0">
+            </div>
+            <div class="col-xs-1">
+                    &nbsp;
+            </div>
+            <div class="col-xs-1">
+            <input type="number" onChange="dosisCheck()" id="dosis2" name="dosis[${x}][jumlah_obat]" class="form-control input-number" min="0" placeholder="Jumlah">
+            </div>`;
+        
+            document.getElementById("resepDosis").insertAdjacentHTML('beforeend', selectbox);
+                    }
+                console.log(empty);
+            }
+        </script>
 @stop

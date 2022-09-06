@@ -150,8 +150,8 @@
                         <input type="checkbox" id="muntah" name="keluhan[]" value="Muntah" class="chk-col-red" />
                         <label for="muntah">MUNTAH &emsp;</label>
                         </div>
-                        <textarea type="text" class="form-control @error('keluhan') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhan" value="{{old('keluhan')}}"> {{old('keluhan')}}</textarea>
-                        @error('keluhan') <span class="text-danger">{{$message}}</span> @enderror
+                        <textarea type="text" class="form-control @error('keluhanManual') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhanManual" value="{{old('keluhanManual')}}"> {{old('keluhanManual')}}</textarea>
+                        @error('keluhanManual') <span class="text-danger">Field keluhan wajib di isi</span> @enderror
                         </div>
                     </div>
             </div>

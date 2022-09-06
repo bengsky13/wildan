@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Alert;
 use DB;
 
@@ -160,5 +162,27 @@ class UserController extends Controller
     if ($user) $user->delete();
     return redirect()->route('users.index')
         ->with('success_message', 'Berhasil menghapus user');
+    }
+
+    public function changepass(Request $request)
+    {
+        $userId = Auth::user()->id;
+        $user = User::where("id", $userId)->first();
+        if($user)
+        {
+            if(!Hash::check($request->password, $user->password))
+            {
+                return redirect()->back()->with('error_message', 'Password lama salah');
+            }
+            if($request->newPassword !== $request->newPasswordConfirm)
+            {
+                return redirect()->back()->with('error_message', 'Password baru tidak sama');
+            }
+            $user->password = Hash::make($request->newPassword);
+            $user->touch();
+            $user->update();
+            return redirect()->back()->with('success_message', 'Password Berhasil Dirubah');
+        }
+
     }
 }

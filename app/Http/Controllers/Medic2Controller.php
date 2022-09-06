@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Medic2;
+use App\Models\Apotek;
 use App\Http\Controllers\AntrianController;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -43,6 +44,49 @@ class Medic2Controller extends Controller
      */
     public function store(Request $request)
     {
+        $dose = $request->dosis;
+        $lastIndex = count($dose)-1;
+        if($lastIndex !== 0)
+        {
+            $empty = 0;
+            foreach($dose[$lastIndex] as $list)
+            {
+                if(strlen($list) == 0)
+                {
+                    $empty = 1;
+                }
+            }
+            if($empty ==1 )
+            {
+                unset($dose[$lastIndex]);
+            }
+        }
+        else
+        {
+            $dose = $request->dosis;
+            $empty = 0;
+            foreach($dose[0] as $list)
+            {
+                if(strlen($list) == 0)
+                {
+                    $empty = 1;
+                }
+            }
+            if($empty ==1 )
+            {
+                unset($dose[$lastIndex]);
+            }
+        }
+        if(count($dose) !== 0)
+        {
+            $stringDosis = "";
+            foreach($dose as $list)
+            {
+                $findObat = Apotek::where("id", $list['nama_obat'])->first();
+                $stringDosis .= $findObat->namobat." ".$list['dosis1']." X ".$list['dosis2']." Jumlah: ".$list['jumlah_obat']."\n";
+            }
+            $request->merge(["obat" => $stringDosis]);
+        }
         $request->validate([
             'noremed'=>'required',
             'kopasant'=>'required',
@@ -53,9 +97,7 @@ class Medic2Controller extends Controller
             'diagnosa'=>'required',
             'noresep'=>'required',
             'obat'=>'required',
-
         ]);
-
         $array = $request->only([
             'noremed',
             'kopasant',
@@ -67,10 +109,21 @@ class Medic2Controller extends Controller
             'noresep',
             'obat'
         ]);
-
-         $medic2 = Medic2::create($array);
-        return redirect()->route('antrian2s.index')
-            ->with('success_message','Pemeriksaan pasien selesai');
+        if($medic2 = Medic2::create($array))
+        {
+            foreach($dose as $dosis)
+            {
+                $findObat = Apotek::where("id", $list['nama_obat'])->first();
+                $findObat->increment("stokobat", -$dosis['jumlah_obat']);
+            }
+            return redirect()->route('antrian2s.index')
+                ->with('success_message','Pemeriksaan pasien selesai');
+        }
+        else
+        {
+            return redirect()->route('antrian2s.index')
+                ->with('error_message','Error');
+        }
     }
 
     /**

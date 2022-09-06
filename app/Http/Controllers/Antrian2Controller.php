@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Antrian;
+use App\Models\Medic2;
 use App\Http\Controllers\Antrian2Controller;
 use Illuminate\Http\Request;
+use App\Models\Apotek;
 use Carbon\Carbon;
 use Alert;
 use Illuminate\Support\Facades\DB;
@@ -52,9 +54,11 @@ class Antrian2Controller extends Controller
      */
     public function show($id)
     {
+        $obat = Apotek::select()->get();
         $antrian2 = Antrian::find($id);
+        $history = Medic2::where("kopasant", $antrian2->kopasant)->orderBy("updated_at", "DESC")->first();
          return view('medic_2.create', [
-        'antrian2s' => $antrian2
+        'antrian2s' => $antrian2, 'obat' => $obat, "history" => $history
     ]);
     }
 

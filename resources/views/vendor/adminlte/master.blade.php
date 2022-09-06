@@ -26,6 +26,7 @@
     @if(!config('adminlte.enabled_laravel_mix'))
         <link rel="stylesheet" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('vendor/selectize/selectize.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/daterangepicker/daterangepicker.css') }}">
 
         {{-- Configured Stylesheets --}}
@@ -85,6 +86,7 @@
         <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('vendor/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
         <script src="{{asset('vendor/daterangepicker/daterangepicker.js')}}"></script>
+        <script src="{{asset('vendor/selectize/selectize.js')}}"></script>
 
         {{-- Configured Scripts --}}
         @include('adminlte::plugins', ['type' => 'js'])
