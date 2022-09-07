@@ -93,6 +93,7 @@ class Antrian2Controller extends Controller
      */
     public function destroy($id)
     {
+        
         $antrian2s = Antrian::find($id);
         if ($antrian2s) $antrian2s->delete();
     return redirect()->route('antrian2s.index')

@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
-use App\Models\Medic2;
 use App\Models\Resep;
+use App\Models\Apotek;
 use Carbon\Carbon;
 use Alert;
 use DB;
@@ -19,7 +19,7 @@ class ResepController extends Controller
      */
     public function index()
     {
-        $reseps = Medic2::all();
+        $reseps = Resep::all();
  
         return view('resep.index', [
         'reseps' => $reseps]);
@@ -43,6 +43,22 @@ class ResepController extends Controller
      */
     public function store(Request $request)
     {
+        $pecah = explode("\n", $request->obat);
+        $x = 0;
+        $arrayObat = array();
+        foreach($pecah as $list)
+        {
+
+            $second = explode("Jumlah: ", $list);
+            $namaObat = explode(" ", $second[0]);
+            for($i = 0; $i<4; $i++)
+            {
+                unset($namaObat[count($namaObat)-1]);
+            }
+            $arrayObat[$x]['nama'] = implode(" ", $namaObat);
+            $arrayObat[$x]['jumlah'] = $second[1];
+            $x++;
+        }
         $request->validate([
 
         'noresep'=>'required',
@@ -59,6 +75,16 @@ class ResepController extends Controller
         ]);
 
          $resep = Resep::create($array);
+         if($resep)
+         {
+            
+            foreach($arrayObat as $list)
+            {
+                $obat = Apotek::where("namobat", $list['nama'])->first();
+                $obat->decrement("stokobat", $list['jumlah']);
+                $obat->touch();
+            }
+         }
         return redirect()->route('reseps.index')
         ->with('success_message', 'Berhasil ');
     }
@@ -71,7 +97,7 @@ class ResepController extends Controller
      */
     public function show($id)
     {
-         $reseps = Medic2::find($id);
+         $reseps = Resep::find($id);
          return view('resep.create', [
         'resep' => $reseps
     ]);

@@ -69,7 +69,7 @@
                          
                         <tbody><?php
                             $antri = $antrian2s->kopasant;
-                            $data = DB::table('medic1s')->where('kopasant',$antri)
+                            $data = DB::table('medic1s')->where('kopasant',$antri)->orderBy("created_at", "DESC")
                             ->first();
                             ?>
                         <tr>
@@ -138,7 +138,8 @@
                             }
                         }
                         @endphp
-                        <textarea type="text" class="form-control @error('keluhan') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhan" value="{{$keluhan}}" readonly > {{$keluhan}}</textarea>
+                        <input type="hidden" name="keluhan" value="{{$data->keluhan}}">
+                        <textarea type="text" class="form-control @error('keluhan') is-invalid @enderror" id="exampleInputKeluhan" placeholder="Keluhan" name="keluhan Manual" value="{{$keluhan}}" readonly > {{$keluhan}}</textarea>
                         @error('keluhan') <span class="text-danger">{{$message}}</span> @enderror
                     </div>
                     <label>2. Pemeriksaan Lanjut dan Diagnosa</label>

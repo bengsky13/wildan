@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Medic2;
+use App\Models\Resep;
 use App\Models\Apotek;
 use App\Http\Controllers\AntrianController;
 use Illuminate\Http\Request;
@@ -111,11 +112,13 @@ class Medic2Controller extends Controller
         ]);
         if($medic2 = Medic2::create($array))
         {
-            foreach($dose as $dosis)
-            {
-                $findObat = Apotek::where("id", $list['nama_obat'])->first();
-                $findObat->increment("stokobat", -$dosis['jumlah_obat']);
-            }
+            $array2 = $request->only([
+                'noresep',
+                'obat',
+                'noremed',
+                'namdok'
+            ]);
+            $resep = Resep::create($array2);
             return redirect()->route('antrian2s.index')
                 ->with('success_message','Pemeriksaan pasien selesai');
         }
